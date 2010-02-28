@@ -6,6 +6,7 @@ import javafx.scene.paint.*;
 import javafx.scene.layout.*;
 import javafx.util.Sequences.*;
 import gitfx.Git.*;
+import javafx.util.Math;
 
 public class CommitString extends CustomNode {
 
@@ -92,15 +93,54 @@ class CommitNode extends CustomNode {
 
 }
 
+class Force {
+
+    public-read var x: Double;
+    public-read var y: Double;
+}
+
+function gravityForce(c: CommitNode) {
+    return Force {
+                x: -c.x / 2.0;
+                y: -c.y / 2.0;
+            }
+}
+
+function connectionForce(parent: CommitNode, child: CommitNode)
+{
+    return Force {
+        x: -(parent.x - child.x)/2;
+        y: -(parent.y - child.y)/2;
+    }
+}
+
+function chargeForce(n1:CommitNode, n2:CommitNode)
+{
+    return Force {
+        x: if(Math.abs(n1.x - n2.x) < 10) then 10 else 0;
+        y: if(Math.abs(n1.y - n2.y) < 10) then 10 else 0;
+    }
+}
+
 public class DAG extends CustomNode {
 
     public var branches: Commit[];
     var nodes: CommitNode[];
 
-    function calculateLayout() {
-    }
-
     override function create(): Node {
+        var nodeSet = new java.util.HashSet();
+        for(b in branches)
+            nodeSet.add(b);
+        var bs = branches;
+        while (sizeof bs > 0)
+        {
+            var c = bs[0];
+            delete bs[0];
+
+        }
+
+
+ /*
         def nodeMap = new java.util.HashMap();
         var bs = branches;
         while (sizeof bs > 0) {
@@ -139,6 +179,7 @@ public class DAG extends CustomNode {
         nodes = for (cn in nodeMap.values()) {
             cn as CommitNode
         };
+        */
         return Group { content: nodes }
     }
 
